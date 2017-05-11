@@ -1,0 +1,8 @@
+.paginationUl {
+  display: inline-flex;
+  list-style: none;
+  padding-left: 100px;
+}
+.paginationLi {
+  padding-left:20px;
+}
