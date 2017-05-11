@@ -6,14 +6,15 @@ import './Listings.css';
 
 const API_KEY = process.env.REACT_APP_SECRET;
 const ETSY_API_URL = 'https://openapi.etsy.com/v2/listings/active.js?api_key=' + API_KEY + '&fields=title,price&includes=Images(url_75x75)&sort_on=score&limit=10';
-
+const ETSY_API_URL_OFFSET = 'https://openapi.etsy.com/v2/listings/active.js?api_key=' + API_KEY + '&fields=title,price&includes=Images(url_75x75)&sort_on=score&limit=10';
 class Listings extends Component {
 
   constructor(props) {
     super(props);
     this.state = {
       listings: [],
-      pageCount: 10
+      pageCount: 10,
+      offset: 0,
     }
   }
 
@@ -21,17 +22,14 @@ class Listings extends Component {
     this.fetchInitialListings();
   }
 
-  renderListings = (data) => {
-    let listings = data.results;
-    console.log(listings);
-    return listings.map((listing, index) => {
-      return (
-        <ul key={index}>
-          <ListingComponent listing={listing} />
-        </ul>
-      )
+  changePage(pageNumber) {
+    fetchJsonp(ETSY_API_URL_OFFSET + '&offset=' + pageNumber * 10)
+    .then((response) => response.json())
+    .then((listings) => {
+      this.setState({listings: listings});
     });
   }
+
 
   fetchInitialListings() {
     fetchJsonp(ETSY_API_URL)
@@ -41,8 +39,18 @@ class Listings extends Component {
     });
   }
 
-  render() {
+  renderListings = (data) => {
+    let listings = data.results;
+    return listings.map((listing, index) => {
+      return (
+        <ul key={index}>
+          <ListingComponent listing={listing} />
+        </ul>
+      )
+    });
+  }
 
+  render() {
     if (this.state.listings.length === 0 ) {
       return (
         <div>Loading...</div>
@@ -52,7 +60,7 @@ class Listings extends Component {
       <div className="listingsContainer">
         <h2 className="topProductsH2"> Top Etsy Products </h2>
         {this.renderListings(this.state.listings)}
-        <PaginationComponent pageCount={this.state.pageCount}/>
+        <PaginationComponent changePage={(pageNumber) => this.changePage(pageNumber)} pageCount={this.state.pageCount}/>
       </div>
     );
   }
