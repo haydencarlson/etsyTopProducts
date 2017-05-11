@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import ListingsComponent from './Listings.js';
+import ListingsComponent from '../Listings/Listings.js';
 
 class App extends Component {
   render() {

@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import fetchJsonp from 'fetch-jsonp';
 import axios from 'axios';
-import ListingComponent from './Listing.js';
-import PaginationComponent from './Pagination.js';
-import CurrencySelectComponent from './CurrencySelect.js';
+import ListingComponent from '../Listing/Listing.js';
+import PaginationComponent from '../Pagination/Pagination.js';
+import CurrencySelectComponent from '../CurrencySelect/CurrencySelect.js';
 import './Listings.css';
 
 const API_KEY = process.env.REACT_APP_SECRET;
