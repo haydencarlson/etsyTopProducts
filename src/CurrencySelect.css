@@ -1,0 +1,10 @@
+.currencySelect {
+  text-align:center;
+}
+.currencySelectUl {
+  list-style:none;
+  display:inline-flex;
+}
+.currencySelectLi {
+  padding-left:10px;
+}
