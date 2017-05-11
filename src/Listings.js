@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
-import fetchJsonp from 'fetch-jsonp'
+import fetchJsonp from 'fetch-jsonp';
+import axios from 'axios';
 import ListingComponent from './Listing.js';
 import PaginationComponent from './Pagination.js';
+import CurrencySelectComponent from './CurrencySelect.js';
 import './Listings.css';
 
 const API_KEY = process.env.REACT_APP_SECRET;
@@ -15,21 +17,65 @@ class Listings extends Component {
       listings: [],
       pageCount: 10,
       offset: 0,
+      currentCurrency: 'USD',
+      GBP: 0,
+      CAD: 0,
+      USD: 0,
+      EUR: 0
+
     }
   }
 
   componentWillMount() {
     this.fetchInitialListings();
+    this.fetchExchangeRates();
+  }
+
+  fetchExchangeRates(currency) {
+    axios.get('http://api.fixer.io/latest?symbols=USD,GBP,CAD,EUR&base=' + this.state.currentCurrency)
+    .then((response) => {
+      let rates = response.data.rates;
+      if (rates.USD) {
+        this.setState({USD: rates.USD})
+      }
+      this.setState({
+        CAD: rates.CAD,
+        EUR: rates.EUR,
+        GBP: rates.GBP
+      })
+      var currentListings = this.state.listings.results;
+      var updatedListing = currentListings.map((listing, i) => {
+        if (currency === "CAD") {
+          listing.price = (listing.price * this.state.CAD).toFixed(2);
+        } else if (currency === "GBP") {
+          listing.price = (listing.price * this.state.GBP).toFixed(2);
+        } else if (currency === "USD") {
+          listing.price = (listing.price * this.state.USD).toFixed(2);
+        } else {
+          listing.price = (listing.price * this.state.EUR).toFixed(2);
+        }
+        return listing;
+      });
+      this.setState({listing: updatedListing});
+    });
   }
 
   changePage(pageNumber) {
-    fetchJsonp(ETSY_API_URL_OFFSET + '&offset=' + pageNumber * 10)
+    let URL = ETSY_API_URL_OFFSET + '&offset=' + pageNumber * 10;
+    if (pageNumber === 1) {
+      URL = ETSY_API_URL;
+    }
+    fetchJsonp(URL)
     .then((response) => response.json())
     .then((listings) => {
       this.setState({listings: listings});
     });
   }
 
+  changeCurrency(currency) {
+    this.setState({currentCurrency: currency});
+    this.fetchExchangeRates(currency);
+  }
 
   fetchInitialListings() {
     fetchJsonp(ETSY_API_URL)
@@ -59,8 +105,13 @@ class Listings extends Component {
     return (
       <div className="listingsContainer">
         <h2 className="topProductsH2"> Top Etsy Products </h2>
+        <CurrencySelectComponent
+          currentCurrency={this.state.currentCurrency}
+          changeCurrency={(currency) => this.changeCurrency(currency)} />
         {this.renderListings(this.state.listings)}
-        <PaginationComponent changePage={(pageNumber) => this.changePage(pageNumber)} pageCount={this.state.pageCount}/>
+        <PaginationComponent
+          changePage={(pageNumber) => this.changePage(pageNumber)}
+          pageCount={this.state.pageCount}  />
       </div>
     );
   }
