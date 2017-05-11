@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import fetchJsonp from 'fetch-jsonp'
 import ListingComponent from './Listing.js';
+import PaginationComponent from './Pagination.js';
 import './Listings.css';
 
 const API_KEY = process.env.REACT_APP_SECRET;
@@ -11,7 +12,8 @@ class Listings extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      listings: []
+      listings: [],
+      pageCount: 10
     }
   }
 
@@ -50,6 +52,7 @@ class Listings extends Component {
       <div className="listingsContainer">
         <h2 className="topProductsH2"> Top Etsy Products </h2>
         {this.renderListings(this.state.listings)}
+        <PaginationComponent pageCount={this.state.pageCount}/>
       </div>
     );
   }
