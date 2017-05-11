@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
 import fetchJsonp from 'fetch-jsonp'
+import ListingComponent from './Listing.js';
+import './Listings.css';
+
 const API_KEY = process.env.REACT_APP_SECRET;
-const ETSY_API_URL = 'https://openapi.etsy.com/v2/listings/active.js?api_key=' + API_KEY + '&fields=title&includes=Images(url_75x75)&sort_on=score&limit=10';
+const ETSY_API_URL = 'https://openapi.etsy.com/v2/listings/active.js?api_key=' + API_KEY + '&fields=title,price&includes=Images(url_75x75)&sort_on=score&limit=10';
 
 class Listings extends Component {
 
@@ -15,8 +18,17 @@ class Listings extends Component {
   componentWillMount() {
     this.fetchInitialListings();
   }
-  renderListings = (listings) => {
+
+  renderListings = (data) => {
+    let listings = data.results;
     console.log(listings);
+    return listings.map((listing, index) => {
+      return (
+        <ul key={index}>
+          <ListingComponent listing={listing} />
+        </ul>
+      )
+    });
   }
 
   fetchInitialListings() {
@@ -36,6 +48,7 @@ class Listings extends Component {
     }
     return (
       <div className="listingsContainer">
+        <h2 className="topProductsH2"> Top Etsy Products </h2>
         {this.renderListings(this.state.listings)}
       </div>
     );
