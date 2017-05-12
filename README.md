@@ -1,4 +1,3 @@
+Mapping out black square coordinates:
 
-Part 1 :
-
-https://jsfiddle.net/heuund7t/1/
+https://jsfiddle.net/5dsu0Lpk/
