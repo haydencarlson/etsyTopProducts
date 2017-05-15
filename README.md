@@ -1,6 +1,6 @@
 Etsy App:
 
-`npm install`__
+`npm install`<br />
 
 `npm start`
 
