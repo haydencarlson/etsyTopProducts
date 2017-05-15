@@ -1,6 +1,7 @@
 Etsy App:
 
-`npm install`
+`npm install`__
+
 `npm start`
 
 Mapping out black square coordinates:
