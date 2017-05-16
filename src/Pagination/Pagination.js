@@ -7,7 +7,7 @@ class Pagination extends Component {
     for (let i = 1; i <= pageCount; i++) {
       pages.push(
         <li className="paginationLi" key={i}>
-        <a href="#" onClick={() => this.props.changePage(i)}> {i} </a>
+          <a href="#" onClick={() => this.props.changePage(i)}> {i} </a>
         </li>
       )
     }
