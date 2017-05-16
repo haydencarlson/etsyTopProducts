@@ -6,7 +6,7 @@ import PaginationComponent from '../Pagination/Pagination.js';
 import CurrencySelectComponent from '../CurrencySelect/CurrencySelect.js';
 import './Listings.css';
 
-const API_KEY = process.env.REACT_APP_SECRET;
+const API_KEY = "6n4474o3ghjqch2x19uecqee";
 const ETSY_API_URL = 'https://openapi.etsy.com/v2/listings/active.js?api_key=' + API_KEY + '&fields=title,price&includes=Images(url_75x75)&sort_on=score&limit=10';
 const ETSY_API_URL_OFFSET = 'https://openapi.etsy.com/v2/listings/active.js?api_key=' + API_KEY + '&fields=title,price&includes=Images(url_75x75)&sort_on=score&limit=10';
 class Listings extends Component {
@@ -22,7 +22,6 @@ class Listings extends Component {
       CAD: 0,
       USD: 0,
       EUR: 0
-
     }
   }
 
@@ -73,6 +72,7 @@ class Listings extends Component {
   }
 
   changeCurrency(currency) {
+    console.log(currency);
     this.setState({currentCurrency: currency});
     this.fetchExchangeRates(currency);
   }
