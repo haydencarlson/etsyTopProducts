@@ -3,7 +3,6 @@ import fetchJsonp from 'fetch-jsonp';
 import axios from 'axios';
 import ListingComponent from '../Listing/Listing.js';
 import PaginationComponent from '../Pagination/Pagination.js';
-import CurrencySelectComponent from '../CurrencySelect/CurrencySelect.js';
 import './Listings.css';
 
 const API_KEY = "6n4474o3ghjqch2x19uecqee";
@@ -30,7 +29,7 @@ class Listings extends Component {
     this.fetchExchangeRates();
   }
 
-  fetchExchangeRates(currency) {
+  fetchExchangeRates(currency, listingTitle) {
     axios.get('http://api.fixer.io/latest?symbols=USD,GBP,CAD,EUR&base=' + this.state.currentCurrency)
     .then((response) => {
       let rates = response.data.rates;
@@ -44,14 +43,16 @@ class Listings extends Component {
       })
       var currentListings = this.state.listings.results;
       var updatedListing = currentListings.map((listing, i) => {
-        if (currency === "CAD") {
+        if (currency === "CAD" && listing.title === listingTitle ) {
           listing.price = (listing.price * this.state.CAD).toFixed(2);
-        } else if (currency === "GBP") {
+        } else if (currency === "GBP" && listing.title === listingTitle) {
           listing.price = (listing.price * this.state.GBP).toFixed(2);
-        } else if (currency === "USD") {
+        } else if (currency === "USD" && listing.title === listingTitle) {
           listing.price = (listing.price * this.state.USD).toFixed(2);
-        } else {
+        } else if (currency === "EUR" && listing.title === listingTitle) {
           listing.price = (listing.price * this.state.EUR).toFixed(2);
+        } else {
+          return '';
         }
         return listing;
       });
@@ -71,10 +72,10 @@ class Listings extends Component {
     });
   }
 
-  changeCurrency(currency) {
+  changeCurrency(currency, title) {
     console.log(currency);
     this.setState({currentCurrency: currency});
-    this.fetchExchangeRates(currency);
+    this.fetchExchangeRates(currency, title);
   }
 
   fetchInitialListings() {
@@ -90,7 +91,10 @@ class Listings extends Component {
     return listings.map((listing, index) => {
       return (
         <ul key={index}>
-          <ListingComponent listing={listing} />
+          <ListingComponent
+            currentCurrency={this.state.currentCurrency}
+            changeCurrency={(currency, title) => this.changeCurrency(currency, title)}
+            listing={listing} />
         </ul>
       )
     });
@@ -105,9 +109,6 @@ class Listings extends Component {
     return (
       <div className="listingsContainer">
         <h2 className="topProductsH2"> Top Etsy Products </h2>
-        <CurrencySelectComponent
-          currentCurrency={this.state.currentCurrency}
-          changeCurrency={(currency) => this.changeCurrency(currency)} />
         {this.renderListings(this.state.listings)}
         <PaginationComponent
           changePage={(pageNumber) => this.changePage(pageNumber)}

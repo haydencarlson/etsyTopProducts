@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import './Listing.css';
-
+import CurrencySelectComponent from '../CurrencySelect/CurrencySelect.js';
 class Listings extends Component {
   render() {
     return (
@@ -10,6 +10,9 @@ class Listings extends Component {
           <p>{this.props.listing.title}</p>
         </li>
         <span>{this.props.listing.price}</span>
+        <CurrencySelectComponent
+          currentCurrency={this.props.currentCurrency}
+          changeCurrency={(currency) => this.props.changeCurrency(currency, this.props.listing.title)} />
         <hr/>
       </div>
     )
