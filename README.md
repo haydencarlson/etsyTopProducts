@@ -1,3 +1,4 @@
+Example React App.
 Etsy App:
 
 `npm install`<br />
